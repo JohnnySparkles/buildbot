@@ -152,6 +152,13 @@ class TestCreateMasterFunctions(dirs.DirsMixin, misc.StdoutAssertionsMixin,
         self.assertNotInTacFile("import Log")
         self.assertWasQuiet()
 
+    def test_makeTAC_logrotate(self):
+        create_master.makeTAC(mkconfig(basedir='test', **{ 'log-size' : 86,
+                                                            'log-count' : 99 }))
+        self.assertInTacFile("rotateLength = 86")
+        self.assertInTacFile("maxRotatedFiles = 99")
+        self.assertWasQuiet()
+
     def test_makeTAC_existing_incorrect(self):
         with open(os.path.join('test', 'buildbot.tac'), 'wt') as f:
             f.write('WRONG')
